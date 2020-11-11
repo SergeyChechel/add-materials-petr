@@ -21,46 +21,52 @@ window.addEventListener('DOMContentLoaded', () => {
             obj[key] = value;
         });
 
-        let json = JSON.stringify(obj);
+        // let json = JSON.stringify(obj);
 
 
-        const request = new XMLHttpRequest();
-        request.open('POST', 'http://localhost:3000/people');
-        request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-        request.send(json);
+        // const request = new XMLHttpRequest();
+        // request.open('POST', 'http://localhost:3000/people');
+        // request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        // request.send(json);
 
-        request.addEventListener('load', function() {
-            if (request.readyState === 4 && request.status == 200) {
-                let data = JSON.parse(request.response);
-                console.log(data);
-                // createCards(data);
-            } else {
-                console.error('Что-то пошло не так...');
-            }
-        });
+        // request.addEventListener('load', function() {
+        //     if (request.readyState === 4 && request.status == 200) {
+        //         let data = JSON.parse(request.response);
+        //         console.log(data);
+        //         // createCards(data);
+        //     } else {
+        //         console.error('Что-то пошло не так...');
+        //     }
+        // });
 
-        // getResource('http://localhost:3000/people')
-        //     .then(data => createCards(data.data))
-        //     .catch(err => console.error(err));
+        getResource('http://localhost:3000/people', obj)
+            .then(data => createCards(data.data))
+            .catch(err => console.error(err));
 
             
     }
 
-    // async function getResource(url) {
-    //     const res = await fetch(`${url}`);
-    //     if (!res.ok) {
-    //         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    //     }
-    //     return await res.json();
-    // }
-
-    async function getResource(url) {
-        const res = await axios(`${url}`);
-        if (res.status !== 200) {
+    async function getResource(url, data) {
+        const res = await fetch(`${url}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) {
             throw new Error(`Could not fetch ${url}, status: ${res.status}`);
         }
-        return res;
+        return await res.json();
     }
+
+    // async function getResource(url) {
+    //     const res = await axios(`${url}`);
+    //     if (res.status !== 200) {
+    //         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    //     }
+    //     return res;
+    // }
 
     
     function createCards(data) {
