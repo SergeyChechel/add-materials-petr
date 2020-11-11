@@ -16,19 +16,26 @@ window.addEventListener('DOMContentLoaded', () => {
         // });
 
         getResource('http://localhost:3000/people')
-            .then(data => createCards(data))
+            .then(data => createCards(data.data))
             .catch(err => console.error(err));
 
             
     }
 
-    async function getResource(url) {
-        const res = await fetch(`${url}`);
+    // async function getResource(url) {
+    //     const res = await fetch(`${url}`);
+    //     if (!res.ok) {
+    //         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    //     }
+    //     return await res.json();
+    // }
 
-        if (!res.ok) {
-            throw new Error(`Could not fatch ${url}, status: ${res.status}`);
+    async function getResource(url) {
+        const res = await axios(`${url}`);
+        if (res.status !== 200) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
         }
-        return await res.json();
+        return res;
     }
 
     
