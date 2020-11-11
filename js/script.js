@@ -1,23 +1,47 @@
 window.addEventListener('DOMContentLoaded', () => {
 
-    function req() {
-        // const request = new XMLHttpRequest();
-        // request.open('GET', 'http://localhost:3000/people');
-        // request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-        // request.send();
+    function req(e) {
+        if (e) {
+            e.preventDefault();
+        }
+        // let body = {
+        //     name: 'Someone',
+        //     surname: 'Else',
+        //     age: 26, 
+        //     id: Math.random()
+        // };
+        const form = document.querySelector('form');
 
-        // request.addEventListener('load', function() {
-        //     if (request.readyState === 4 && request.status == 200) {
-        //         let data = JSON.parse(request.response);
-        //         createCards(data);
-        //     } else {
-        //         console.error('Что-то пошло не так...');
-        //     }
-        // });
+        let formData = new FormData(form);
+        formData.append('id', Math.random());
+        
+        let obj = {};
 
-        getResource('http://localhost:3000/people')
-            .then(data => createCards(data.data))
-            .catch(err => console.error(err));
+        formData.forEach((value, key) => {
+            obj[key] = value;
+        });
+
+        let json = JSON.stringify(obj);
+
+
+        const request = new XMLHttpRequest();
+        request.open('POST', 'http://localhost:3000/people');
+        request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        request.send(json);
+
+        request.addEventListener('load', function() {
+            if (request.readyState === 4 && request.status == 200) {
+                let data = JSON.parse(request.response);
+                console.log(data);
+                // createCards(data);
+            } else {
+                console.error('Что-то пошло не так...');
+            }
+        });
+
+        // getResource('http://localhost:3000/people')
+        //     .then(data => createCards(data.data))
+        //     .catch(err => console.error(err));
 
             
     }
@@ -57,6 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const btn = document.querySelector('.cards');
+    const btn2 = document.querySelector('form button');
 
     btn.addEventListener('click', () => {
         if (!btn.classList.contains('showed')) {
@@ -69,8 +94,9 @@ window.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = 'Показать карточки';
             btn.nextElementSibling.innerHTML = '';
         }
-        
     });
+
+    btn2.addEventListener('click', (e) => req(e));
 
     
     
